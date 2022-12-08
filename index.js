@@ -19,14 +19,15 @@ async function run() {
     try {
         const productsCollection = client.db('startingCore').collection('categories')
         const stokesProductsCollection = client.db('startingCore').collection('stocksProduct')
-        const borrowedProducts = client.db('startingCore').collection('borrowed')
+        const borrowedProductsCollection = client.db('startingCore').collection('borrowed')
+        const returnProductsCollection = client.db('startingCore').collection('return')
 
         app.get('/categories', async (req, res) => {
             const query = {}
             const result = await productsCollection.find(query).toArray()
             res.send(result)
         })
-
+        // -------------------------- cash stocks----------------------
         app.get('/stocksProduct', async (req, res) => {
             const query = {}
             const result = await stokesProductsCollection.find(query).toArray()
@@ -52,25 +53,45 @@ async function run() {
 
         app.get('/borrowed', async (req, res) => {
             const query = {}
-            const result = await borrowedProducts.find(query).toArray()
+            const result = await borrowedProductsCollection.find(query).toArray()
             res.send(result)
         })
         app.post('/borrowed', async (req, res) => {
             const item = req.body
             console.log(item)
-            const result = await borrowedProducts.insertOne(item)
+            const result = await borrowedProductsCollection.insertOne(item)
             res.send(result)
         })
-        
+
         app.get('/borrowed/:id', async (req, res) => {
             const id = req.params.id;
             const query = { categoryId: id };
             console.log(query)
-            const result = await borrowedProducts.find(query).toArray();
+            const result = await borrowedProductsCollection.find(query).toArray();
             res.send(result);
 
         })
+        // ---------------------------return--------------------------------------------
+        app.get('/return', async (req, res) => {
+            const query = {}
+            const result = await returnProductsCollection.find(query).toArray()
+            res.send(result)
+        })
+        app.post('/return', async (req, res) => {
+            const item = req.body
+            console.log(item)
+            const result = await returnProductsCollection.insertOne(item)
+            res.send(result)
+        })
 
+        app.get('/return/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { categoryId: id };
+            console.log(query)
+            const result = await returnProductsCollection.find(query).toArray();
+            res.send(result);
+
+        })
     }
     finally {
 
