@@ -33,6 +33,13 @@ async function run() {
             res.send(result)
         })
 
+        app.post('/stocksProduct', async (req, res) => {
+            const item = req.body
+            console.log(item)
+            const result = await stokesProductsCollection.insertOne(item)
+            res.send(result)
+        })
+
         app.get('/stocksProduct/:id', async (req, res) => {
             const id = req.params.id;
             const query = { categoryId: id };
