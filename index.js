@@ -7,7 +7,7 @@ const port = process.env.PORT || 5000
 const app = express()
 
 app.use(cors())
-app.use(express.json()) 
+app.use(express.json())
 
 
 
@@ -16,16 +16,16 @@ console.log(uri)
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run() {
-    try{
-            const productsCollection = client.db('startingCore').collection('categories')
-            const stokesProductsCollection = client.db('startingCore').collection('stocksProduct')
+    try {
+        const productsCollection = client.db('startingCore').collection('categories')
+        const stokesProductsCollection = client.db('startingCore').collection('stocksProduct')
+        const borrowedProducts = client.db('startingCore').collection('borrowed')
 
-        
-            app.get('/categories', async (req, res) => {
-                const query = {}
-                const result = await productsCollection.find(query).toArray()
-                res.send(result)
-            })
+        app.get('/categories', async (req, res) => {
+            const query = {}
+            const result = await productsCollection.find(query).toArray()
+            res.send(result)
+        })
 
         app.get('/stocksProduct', async (req, res) => {
             const query = {}
@@ -46,10 +46,33 @@ async function run() {
             console.log(query)
             const result = await stokesProductsCollection.find(query).toArray();
             res.send(result);
-            
+
         })
+        //  ------------------borrowed------------------------------------
+
+        app.get('/borrowed', async (req, res) => {
+            const query = {}
+            const result = await borrowedProducts.find(query).toArray()
+            res.send(result)
+        })
+        app.post('/borrowed', async (req, res) => {
+            const item = req.body
+            console.log(item)
+            const result = await borrowedProducts.insertOne(item)
+            res.send(result)
+        })
+        
+        app.get('/borrowed/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { categoryId: id };
+            console.log(query)
+            const result = await borrowedProducts.find(query).toArray();
+            res.send(result);
+
+        })
+
     }
-    finally{
+    finally {
 
     }
 }
