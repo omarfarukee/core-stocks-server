@@ -78,6 +78,12 @@ async function run() {
             res.send(result);
 
         })
+        app.delete('/borrowed/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await borrowedProductsCollection.deleteOne(query);
+            res.send(result)
+        })
         // ---------------------------return--------------------------------------------
         app.get('/return', async (req, res) => {
             const query = {}
@@ -98,6 +104,13 @@ async function run() {
             const result = await returnProductsCollection.find(query).toArray();
             res.send(result);
 
+        })
+
+        app.delete('/return/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await returnProductsCollection.deleteOne(query);
+            res.send(result)
         })
     }
     finally {
