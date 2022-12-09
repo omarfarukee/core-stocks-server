@@ -18,15 +18,21 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const productsCollection = client.db('startingCore').collection('categories')
+
         const stokesProductsCollection = client.db('startingCore').collection('stocksProduct')
         const borrowedProductsCollection = client.db('startingCore').collection('borrowed')
         const returnProductsCollection = client.db('startingCore').collection('return')
+
+        const soldProductsCollection = client.db('startingCore').collection('sold')
+        const lendProductsCollection = client.db('startingCore').collection('lend')
 
         app.get('/categories', async (req, res) => {
             const query = {}
             const result = await productsCollection.find(query).toArray()
             res.send(result)
         })
+        // ============================= STOCKS IN ============================================================//
+
         // -------------------------- cash stocks----------------------
         app.get('/stocksProduct', async (req, res) => {
             const query = {}
@@ -56,7 +62,7 @@ async function run() {
             res.send(result);
 
         })
-        //  ------------------borrowed------------------------------------
+        //  ------------------borrowed---------------------------------------------//
 
         app.get('/borrowed', async (req, res) => {
             const query = {}
@@ -84,7 +90,7 @@ async function run() {
             const result = await borrowedProductsCollection.deleteOne(query);
             res.send(result)
         })
-        // ---------------------------return--------------------------------------------
+        // ---------------------------return--------------------------------------------//
         app.get('/return', async (req, res) => {
             const query = {}
             const result = await returnProductsCollection.find(query).toArray()
@@ -112,6 +118,65 @@ async function run() {
             const result = await returnProductsCollection.deleteOne(query);
             res.send(result)
         })
+
+
+        // ================================STOCKS OUT ==============================================//
+
+        // ------------------------------sold-------------------------------//
+        app.get('/sold', async (req, res) => {
+            const query = {}
+            const result = await soldProductsCollection.find(query).toArray()
+            res.send(result)
+        })
+        app.get('/sold/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { categoryId: id };
+            console.log(query)
+            const result = await soldProductsCollection.find(query).toArray();
+            res.send(result);
+
+        })
+        app.post('/sold', async (req, res) => {
+            const item = req.body
+            console.log(item)
+            const result = await soldProductsCollection.insertOne(item)
+            res.send(result)
+        })
+        app.delete('/sold/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await soldProductsCollection.deleteOne(query);
+            res.send(result)
+        })
+
+        // -------------------------------lend --------------------------------------------------------//
+        app.get('/lend', async (req, res) => {
+            const query = {}
+            const result = await lendProductsCollection.find(query).toArray()
+            res.send(result)
+        })
+        app.get('/lend/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { categoryId: id };
+            console.log(query)
+            const result = await lendProductsCollection.find(query).toArray();
+            res.send(result);
+
+        })
+        app.post('/lend', async (req, res) => {
+            const item = req.body
+            console.log(item)
+            const result = await lendProductsCollection.insertOne(item)
+            res.send(result)
+        })
+        app.delete('/lend/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await lendProductsCollection.deleteOne(query);
+            res.send(result)
+        })
+
+
     }
     finally {
 
