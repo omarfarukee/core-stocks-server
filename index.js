@@ -25,6 +25,11 @@ async function run() {
 
         const soldProductsCollection = client.db('startingCore').collection('sold')
         const lendProductsCollection = client.db('startingCore').collection('lend')
+        const returnBackProductsCollection = client.db('startingCore').collection('returnBack')
+
+        const profitAccountsCollection = client.db('startingCore').collection('profitAccount')
+
+
 
         app.get('/categories', async (req, res) => {
             const query = {}
@@ -175,8 +180,62 @@ async function run() {
             const result = await lendProductsCollection.deleteOne(query);
             res.send(result)
         })
+        // --------------------------------------Return back --------------------------//
 
+        app.get('/returnBack', async (req, res) => {
+            const query = {}
+            const result = await returnBackProductsCollection.find(query).toArray()
+            res.send(result)
+        })
+        app.get('/returnBack/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { categoryId: id };
+            console.log(query)
+            const result = await returnBackProductsCollection.find(query).toArray();
+            res.send(result);
 
+        })
+        app.post('/returnBack', async (req, res) => {
+            const item = req.body
+            console.log(item)
+            const result = await returnBackProductsCollection.insertOne(item)
+            res.send(result)
+        })
+        app.delete('/returnBack/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await returnBackProductsCollection.deleteOne(query);
+            res.send(result)
+        })
+
+        // ----------------------------------profit account ------------------------------------//
+
+        app.get('/profitAccount', async (req, res) => {
+            const query = {}
+            const result = await profitAccountsCollection.find(query).toArray()
+            res.send(result)
+        })
+        app.post('/profitAccount', async (req, res) => {
+            const item = req.body
+            console.log(item)
+            const result = await profitAccountsCollection.insertOne(item)
+            res.send(result)
+        })
+
+        app.get('/profitAccount/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            console.log(query)
+            const result = await profitAccountsCollection.find(query).toArray();
+            res.send(result);
+
+        })
+        app.delete('/profitAccount/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await profitAccountsCollection.deleteOne(query);
+            res.send(result)
+        })
     }
     finally {
 
